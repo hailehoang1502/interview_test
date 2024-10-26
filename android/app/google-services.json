@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "274578554841",
+    "project_id": "interview-test-auth",
+    "storage_bucket": "interview-test-auth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274578554841:android:6a810014b5656c4f84a3c8",
+        "android_client_info": {
+          "package_name": "com.example.flutter_interview_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPM7S0YkihBBrnX4mgCgnMNQ7FiL-TG4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
