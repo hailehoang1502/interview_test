@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_interview_test/pages/log_in_page.dart';
-import 'package:flutter_interview_test/pages/register_page.dart';
+import 'package:flutter_interview_test/pages/auth/log_in_page.dart';
+import 'package:flutter_interview_test/pages/auth/register_page.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({super.key});
@@ -20,12 +20,12 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
     showDialog(
         context: context,
         builder: (context) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         });
-    Future.delayed(Duration(milliseconds: 200), () {
-      Navigator.of(context).pop(); // Closes the dialog
+    Future.delayed(const Duration(milliseconds: 200), () {
+      Navigator.of(context).pop();
     });
   }
   @override

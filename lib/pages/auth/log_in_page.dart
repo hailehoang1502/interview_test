@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_interview_test/components/email_input.dart';
+import 'package:flutter_interview_test/components/password_input.dart';
+import 'package:flutter_interview_test/components/submit_button.dart';
+import '../../functions/sign_in.dart';
 
 class LogInPage extends StatefulWidget {
   void Function()? onTap;
@@ -16,42 +19,9 @@ class LogInPage extends StatefulWidget {
 class _LogInPageState extends State<LogInPage> {
   bool _isChecked = false;
   bool _isForgetPasswordPressed = false;
-  bool _isPasswordVisible = false;
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-  void SignUserIn() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()
-      );
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-      showToast("Sai email hoặc mật khẩu");
-    }
-  }
-
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      backgroundColor: Colors.transparent,
-      textColor: Colors.red,
-      fontSize: 16.0,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,25 +72,7 @@ class _LogInPageState extends State<LogInPage> {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                margin: const EdgeInsets.only(left: 20, top: 15, right: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 0.5, color: Colors.black)),
-                child: TextField(
-                  onTapOutside: (event) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 10),
-                      border: InputBorder.none,
-                      hintText: "Nhập email",
-                      hintStyle: TextStyle(color: Colors.grey)),
-                ),
-              ),
+              EmailInput(emailController: emailController),
 
               //mật khẩu
               Container(
@@ -136,42 +88,7 @@ class _LogInPageState extends State<LogInPage> {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                margin: const EdgeInsets.only(left: 20, top: 15, right: 20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(width: 0.5, color: Colors.black)),
-                child: TextField(
-                  obscureText: !_isPasswordVisible, // Toggle visibility
-                  onTapOutside: (event) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 10), // Adjust padding,
-                    border: InputBorder.none,
-                    hintText: "Nhập mật khẩu",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility // Open eye icon
-                            : Icons.visibility_off, // Closed eye icon
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible =
-                              !_isPasswordVisible; // Toggle visibility
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ),
+              PasswordInput(passwordController: passwordController),
 
               Container(
                 margin: EdgeInsets.only(top: 10, right: 20),
@@ -214,20 +131,17 @@ class _LogInPageState extends State<LogInPage> {
                     GestureDetector(
                       onTapDown: (_) {
                         setState(() {
-                          _isForgetPasswordPressed =
-                              true; // Change state on press down
+                          _isForgetPasswordPressed = true;
                         });
                       },
                       onTapUp: (_) {
                         setState(() {
-                          _isForgetPasswordPressed =
-                              false; // Reset state on release
+                          _isForgetPasswordPressed = false;
                         });
                       },
                       onTapCancel: () {
                         setState(() {
-                          _isForgetPasswordPressed =
-                              false; // Reset state if cancel
+                          _isForgetPasswordPressed = false;
                         });
                       },
                       child: Opacity(
@@ -242,26 +156,11 @@ class _LogInPageState extends State<LogInPage> {
                 ),
               ),
 
-              //log in button
-              Container(
-                margin: const EdgeInsets.only(top: 30, left: 20, right: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      backgroundColor: Colors.blue, // Background color
-                      side: const BorderSide(
-                          color: Colors.blue, width: 2), // Border
-                    ),
-                    onPressed: SignUserIn, // Action when the button is pressed
-                    child: const Text(
-                      "Đăng nhập",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
+              //sign in button
+              SubmitButton(
+                  onPressed: () => SignUserIn(
+                      context, emailController.text, passwordController.text),
+                  label: "Đăng nhập"),
 
               Container(
                 margin: EdgeInsets.only(top: 30),
@@ -274,11 +173,11 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                     GestureDetector(
                       onTap: widget.onTap,
-                        child: const Text(
-                          "Đăng ký ngay",
-                          style: TextStyle(fontSize: 14, color: Colors.blue),
-                        ),
+                      child: const Text(
+                        "Đăng ký ngay",
+                        style: TextStyle(fontSize: 14, color: Colors.blue),
                       ),
+                    ),
                   ],
                 ),
               ),
